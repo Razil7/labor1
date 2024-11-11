@@ -5,8 +5,10 @@
 #include <string>
 #include <iostream>
 #include "test.h"
+#include "MutableListSequence.h"
 
 using namespace std;
+
 
 int main() {
 	setlocale(LC_ALL, "RU");
@@ -93,12 +95,12 @@ int main() {
 			}
 		}
 		catch (EmptyPtr& e) {
-			cout << "попробуйте ввести другое число" << endl;
+			cout << "операция не удалась, попробуйте заново" << endl;
 			cout << "текущее значение List : ";
 			listPrint = true;
 		}
 		catch (std::exception& e) {
-			cout << "попробуйте ввести другое число" << endl;
+			cout << "операция не удалась, попробуйте заново" << endl;
 			cout << "текущее значение List : ";
 			listPrint = true;
 		}

@@ -96,11 +96,11 @@ void test_concat() {
 		for (int i = 0; i < 10; i++) {
 			list.append(i);
 		}
-		LinkedList <int> list2;
+		SharedPointer<LinkedList<int>> ptr(new LinkedList<int>);
 		for (int i = 0; i < 10; i++) {
-			list2.append(i+10);
+			ptr->append(i + 10);
 		}
-		list.concat(list2);
+		list.concat(ptr);
 		for (int i = 0; i < 20; i++) {
 			assert(list[i] == i);
 		}

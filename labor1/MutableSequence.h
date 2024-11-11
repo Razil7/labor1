@@ -21,7 +21,7 @@ public:
 
     virtual void insertAt(int, ElmType) = 0;
 
-    virtual void concat(const MutableSequence<ElmType>&) = 0;
+    virtual void concat(const SharedPointer<MutableSequence<ElmType>> ) = 0;
 
     virtual void remove(int) = 0;
 

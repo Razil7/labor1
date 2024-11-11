@@ -40,7 +40,7 @@ public:
 
     void concat(const SharedPointer<MutableSequence<ElmType>> source) override
     {
-        for (int i = 0; i < source.getSize(); i++)
+        for (int i = 0; i < source->getSize(); i++)
             _inner.append(source->get(i));
     }
 

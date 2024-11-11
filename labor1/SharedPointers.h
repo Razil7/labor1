@@ -11,6 +11,18 @@ class WeakPointer;
 template <class Elm>
 class SharedPointer
 {
+
+	void deleteIfLast() {
+		if (!refCounter) return;
+		if (*refCounter > 1) (*refCounter)--;
+		else {
+			delete source;
+			if (*weakCounter == 0) {
+				delete weakCounter;
+				delete refCounter;
+			}
+		}
+	}
 public:
 	SharedPointer() : source(nullptr), refCounter(new int(0)), weakCounter(new int(0)) {};
 	SharedPointer(Elm*&& elm) : source(elm), refCounter(new int(1)), weakCounter(new int(0)) {}
@@ -18,50 +30,48 @@ public:
 	{
 		(*refCounter)++;
 	}
-	explicit SharedPointer(const WeakPointer<Elm>& weak):source(weak.source), weakCounter(weak.weakCounter), refCounter(weak.refCounter) {
+	explicit SharedPointer(const WeakPointer<Elm>& weak) :source(weak.source), weakCounter(weak.weakCounter), refCounter(weak.refCounter) {
 		(*refCounter)++;
 	}
 
 	SharedPointer& operator=(const SharedPointer& right_obj) {
-
-		if (*refCounter == 1) {
-			delete source;
-			delete refCounter;
-		}
-		else {
-			(*refCounter)--;
-		}
+		deleteIfLast();
 		source = right_obj.source;
 		refCounter = right_obj.refCounter;
+		weakCounter = right_obj.weakCounter;
 		(*refCounter)++;
 		return *this;
 	}
+	SharedPointer(SharedPointer&& obj) : source(std::move(obj.sorce)),
+		weakCounter(std::move(obj.weakCounter)), refCounter(std::move(obj.refCounter)) {}
 
+	SharedPointer& operator=(SharedPointer&& right_obj) {
+		deleteIfLast();
+		source = std::move(right_obj.source);
+		weakCounter = std::move(right_obj.weakCounter);
+		refCounter = std::move(right_obj.refCounter);
+	}
 	~SharedPointer()
 	{
-		if (*refCounter > 1)
-		{
-			(*refCounter)--;
-			return;
-		}
-
-		delete source;
-		if (*weakCounter == 0) {
-			delete refCounter;
-			delete weakCounter;
-		}
-		
+		deleteIfLast();
 	}
-
 
 	void reset(Elm* obj)
 	{
-		delete source;
+		deleteIfLast();
 		source = obj;
-		obj = nullptr;
+		refCounter = new int(1);
+		weakCounter = new int(0);
 	}
 
 	Elm& operator*()
+	{
+		if (!source) {
+			throw EmptyPtr("указатель nullptr");
+		}
+		return *source;
+	}
+	const Elm& operator*() const
 	{
 		if (!source) {
 			throw EmptyPtr("указатель nullptr");
@@ -81,7 +91,7 @@ public:
 		return source;
 	}
 
-	Elm* operator->() const {
+	const Elm* operator->() const {
 		if (!source) {
 			throw EmptyPtr("указатель nullptr");
 		}

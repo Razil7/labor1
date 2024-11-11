@@ -30,7 +30,7 @@ private:
     }
 
 public:
-    WeakPointer() : source(nullptr), weakCounter(nullptr), refCounter(nullptr) {}
+    WeakPointer() : source(nullptr), weakCounter(new int(0)), refCounter(new int (0)) {}
 
     WeakPointer(const SharedPointer<T>& other) : source(other.source), weakCounter(other.weakCounter), refCounter(other.refCounter)
     {
@@ -48,21 +48,15 @@ public:
         }
     }
 
-    WeakPointer(WeakPointer<T>&& other) noexcept : source(other.source), weakCounter(other.weakCounter), refCounter(other.refCounter)
-    {
-        other.source = nullptr;
-        other.weakCounter = nullptr;
-        other.refCounter = nullptr;
-    }
+    WeakPointer(WeakPointer<T>&& other) noexcept : source(std::move(other.sorce)), 
+        weakCounter(std::move(other.weakCounter)), refCounter(std::move(other.refCounter)) {}
+
 
     WeakPointer<T>& operator=(const WeakPointer<T>& other)
     {
         if (this != &other)
         {
-            if (weakCounter)
-            {
-                deleteIfLast();
-            }
+            deleteIfLast();
 
             source = other.source;
             weakCounter = other.weakCounter;
@@ -80,10 +74,7 @@ public:
     {
         if (this != &other)
         {
-            if (weakCounter)
-            {
-                deleteIfLast();
-            }
+            deleteIfLast();
 
             source = std::move(other.source);
             weakCounter = std::move(other.weakCounter);
