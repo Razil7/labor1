@@ -51,11 +51,7 @@ public:
 		for (int i = 0; i < source.getSize(); i++)
 			append(source[i]);
 	}
-	~LinkedList() {
-		while (_size) {
-			remove(0);
-		}
-	}
+	~LinkedList() {}
 
 	ElmType& operator[](int index) const
 	{
@@ -131,10 +127,10 @@ public:
 		_size++;
 	}
 
-	void concat(const LinkedList<ElmType>& source)
+	void concat(const SharedPointer<LinkedList<ElmType>> source)
 	{
-		for (int i = 0; i < source.getSize(); i++)
-			this->append(source[i]);
+		for (int i = 0; i < source->getSize(); i++)
+			this->append((*source)[i]);
 	}
 
 	void remove(int index)

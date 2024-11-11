@@ -11,20 +11,16 @@ class UniquePointer
 public:
 	UniquePointer() : source(nullptr) {};
 
-	UniquePointer(Elm*&& elm) : source(elm) { }
+	UniquePointer(Elm*&& elm) : source(elm) {}
 
 	UniquePointer(const UniquePointer& obj) = delete;
 
 	UniquePointer<Elm>& operator=(const UniquePointer<Elm>& obj) = delete;
 
-	UniquePointer(UniquePointer&& obj) : source(obj.source) {
-		obj.source = nullptr;
-	}
+	UniquePointer(UniquePointer&& obj) : source(std::move(obj.sorce)){}
 
 	UniquePointer<Elm>& operator=(UniquePointer<Elm>&& obj) {
-		delete source;
-		source = obj.source;
-		obj.source = nullptr;
+		source = std::move(obj.sorce);
 		return *this;
 	}
 
@@ -34,7 +30,18 @@ public:
 	}
 
 	Elm& operator*()
+	{	
+		if (!source) {
+			throw EmptyPtr("указатель nullptr");
+		}
+		return *source;
+	}
+
+	const Elm& operator*() const
 	{
+		if (!source) {
+			throw EmptyPtr("указатель nullptr");
+		}
 		return *source;
 	}
 
@@ -45,7 +52,7 @@ public:
 		return source;
 	}
 
-	Elm* operator->() const {
+	const Elm* operator->() const {
 		if (!source) {
 			throw EmptyPtr("указатель nullptr");
 		}
@@ -53,11 +60,8 @@ public:
 	}
 
 	void setPtr(Elm*&& newSource) {
-		if (!source) {
-			source = newSource;
-			return;
-		}
-		throw EmptyPtr("setPtr - Unique не nullptr");
+		if (source) throw EmptyPtr("setPtr - Unique не nullptr");
+		source = newSource;
 	}
 
 private:
