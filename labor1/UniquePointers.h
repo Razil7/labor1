@@ -61,7 +61,7 @@ public:
 
 	void setPtr(Elm*&& newSource) {
 		if (source) throw EmptyPtr("setPtr - Unique не nullptr");
-		source = newSource;
+		source = std::move(newSource);
 	}
 
 private:

@@ -14,8 +14,8 @@ class SharedPointer
 
 	void deleteIfLast() {
 		if (!refCounter) return;
-		if (*refCounter > 1) (*refCounter)--;
-		else {
+		if (*refCounter > 0) (*refCounter)--;
+		if(*refCounter == 0) {
 			delete source;
 			if (*weakCounter == 0) {
 				delete weakCounter;
@@ -24,7 +24,7 @@ class SharedPointer
 		}
 	}
 public:
-	SharedPointer() : source(nullptr), refCounter(new int(0)), weakCounter(new int(0)) {};
+	SharedPointer() : source(nullptr), refCounter(new int(1)), weakCounter(new int(0)) {};
 	SharedPointer(Elm*&& elm) : source(elm), refCounter(new int(1)), weakCounter(new int(0)) {}
 	SharedPointer(const SharedPointer& obj) : source(obj.source), refCounter(obj.refCounter), weakCounter(obj.weakCounter)
 	{

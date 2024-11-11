@@ -30,7 +30,7 @@ private:
     }
 
 public:
-    WeakPointer() : source(nullptr), weakCounter(new int(0)), refCounter(new int (0)) {}
+    WeakPointer() : source(nullptr), weakCounter(new int(1)), refCounter(new int (0)) {}
 
     WeakPointer(const SharedPointer<T>& other) : source(other.source), weakCounter(other.weakCounter), refCounter(other.refCounter)
     {

@@ -18,7 +18,25 @@ private:
 	SharedPointer<Element> _head;
 	int _size;
 
-	ElmType& get(int index) const
+	const ElmType& get(int index) const
+	{
+		if ((index < 0) or (index >= _size))
+			throw std::out_of_range("Index out of range");
+
+		int i = 0;
+
+		SharedPointer<Element> res(_head);
+
+		while (i < index)
+		{
+			i++;
+			res = res->_next;
+		}
+
+		return res->_value;
+	}
+
+    ElmType& get(int index) 
 	{
 		if ((index < 0) or (index >= _size))
 			throw std::out_of_range("Index out of range");
@@ -53,7 +71,12 @@ public:
 	}
 	~LinkedList() {}
 
-	ElmType& operator[](int index) const
+	const ElmType& operator[](int index) const
+	{
+		return get(index);
+	}
+
+	ElmType& operator[](int index) 
 	{
 		return get(index);
 	}
