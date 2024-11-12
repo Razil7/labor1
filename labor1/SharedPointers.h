@@ -34,6 +34,10 @@ public:
 		(*refCounter)++;
 	}
 
+	explicit SharedPointer(SharedPointer&& obj) : source(std::move(obj.source)),
+		weakCounter(std::move(obj.weakCounter)), refCounter(std::move(obj.refCounter)) {}
+
+
 	SharedPointer& operator=(const SharedPointer& right_obj) {
 		deleteIfLast();
 		source = right_obj.source;
@@ -42,14 +46,12 @@ public:
 		(*refCounter)++;
 		return *this;
 	}
-	SharedPointer(SharedPointer&& obj) : source(std::move(obj.sorce)),
-		weakCounter(std::move(obj.weakCounter)), refCounter(std::move(obj.refCounter)) {}
-
-	SharedPointer& operator=(SharedPointer&& right_obj) {
+	SharedPointer& operator=(SharedPointer&& right_obj) noexcept {
 		deleteIfLast();
 		source = std::move(right_obj.source);
 		weakCounter = std::move(right_obj.weakCounter);
 		refCounter = std::move(right_obj.refCounter);
+		return *this;
 	}
 	~SharedPointer()
 	{
@@ -79,7 +81,7 @@ public:
 		return *source;
 	}
 
-	int GetCount()
+	int GetCount() 
 	{
 		return *refCounter;
 	}

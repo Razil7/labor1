@@ -4,6 +4,9 @@
 #include "test.h"
 #include <cassert>
 #include <sstream>
+#include "UniquePointers.h"
+#include "SharedPointers.h"
+#include "WeakPointers.h"
 using namespace std;
 
 void test_append() {
@@ -205,5 +208,144 @@ void test_popLast() {
 		return;
 	}
 	cout << "тест test_popLast - пройден" << endl;
+	return;
+}
+
+void test_UniquePtr() {
+
+	try {
+		UniquePointer<int> ptr(new int(3));
+		stringstream ss;
+		ss << *ptr;
+		assert(ss.str() == "3");
+
+		UniquePointer<int> ptrnull;
+		ptrnull.setPtr(new int(3));
+		stringstream ss1;
+		ss1 << *ptrnull;
+		assert(ss1.str() == "3");
+
+		UniquePointer<int> ptr2;
+		ptr2 = std::move( ptr );
+		stringstream ss2 ;
+		ss2 << *ptr2 ;
+		assert(ss2.str() == "3") ;
+
+	}
+	catch (EmptyPtr& e) {
+		cout << "тест test_UniquePtr - НЕ пройден - " << endl;
+		cout << e.what() << endl;
+		return;
+	}
+	catch (std::exception& e) {
+		cout << "тест test_UniquePtr - НЕ пройден - " << endl;
+		cout << e.what() << endl;
+		return;
+	}
+	cout << "тест test_UniquePtr - пройден" << endl;
+	return;
+}
+void test_SharedPtr() {
+
+	try {
+		SharedPointer<int> ptr(new int(3));
+		stringstream ss;
+		ss << *ptr;
+		assert(ss.str() == "3");
+
+		SharedPointer <int> ptrnull;
+		ptrnull.reset(new int(3));
+		stringstream ss1;
+		ss1 << *ptrnull;
+		assert(ss1.str() == "3");
+
+		stringstream ss11;
+		ss11 << ptrnull.GetCount();
+		assert(ss11.str() == "1");
+
+		SharedPointer <int> ptr2;
+		ptr2 = std::move(ptr);
+		stringstream ss2;
+		ss2 << *ptr2;
+		assert(ss2.str() == "3");
+
+		SharedPointer <int> ptr3;
+		ptr3 = ptr;
+		stringstream ss3;
+		ss3 << *ptr3;
+		assert(ss3.str() == "3");
+
+		stringstream ss33;
+		ss33 << ptr3.GetCount();
+		assert(ss33.str() == "2");
+
+	}
+	catch (EmptyPtr& e) {
+		cout << "тест test_SharedPtr - НЕ пройден - " << endl;
+		cout << e.what() << endl;
+		return;
+	}
+	catch (std::exception& e) {
+		cout << "тест test_SharedPtr - НЕ пройден - " << endl;
+		cout << e.what() << endl;
+		return;
+	}
+	cout << "тест test_SharedPtr - пройден" << endl;
+	return;
+}
+void test_WeakPtr() {
+	try {
+		WeakPointer<int> ptrweak;
+		stringstream ss0;
+		ss0 << ptrweak.expired();
+		ss0 << ptrweak.use_count();
+		assert(ss0.str() == "10");
+
+		SharedPointer<int> ptr(new int(3));
+		stringstream ss;
+		ss << *ptr;
+		assert(ss.str() == "3");
+
+		SharedPointer <int> ptrnull;
+		ptrnull.reset(new int(3));
+		stringstream ss1;
+		ss1 << *ptrnull;
+		assert(ss1.str() == "3");
+
+		WeakPointer<int> weak(ptrnull);
+		SharedPointer <int> ptrX = weak.lock();
+		
+		stringstream ss11;
+		ss11 << ptrnull.GetCount();
+		assert(ss11.str() == "2");
+
+		SharedPointer <int> ptr2;
+		ptr2 = std::move(ptr);
+		stringstream ss2;
+		ss2 << *ptr2;
+		assert(ss2.str() == "3");
+
+		SharedPointer <int> ptr3;
+		ptr3 = ptr;
+		stringstream ss3;
+		ss3 << *ptr3;
+		assert(ss3.str() == "3");
+
+		stringstream ss33;
+		ss33 << ptr3.GetCount();
+		assert(ss33.str() == "2");
+
+	}
+	catch (EmptyPtr& e) {
+		cout << "тест test_WeakPtr - НЕ пройден - " << endl;
+		cout << e.what() << endl;
+		return;
+	}
+	catch (std::exception& e) {
+		cout << "тест test_WeakPtr - НЕ пройден - " << endl;
+		cout << e.what() << endl;
+		return;
+	}
+	cout << "тест test_WeakPtr - пройден" << endl;
 	return;
 }

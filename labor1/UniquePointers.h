@@ -17,10 +17,12 @@ public:
 
 	UniquePointer<Elm>& operator=(const UniquePointer<Elm>& obj) = delete;
 
-	UniquePointer(UniquePointer&& obj) : source(std::move(obj.sorce)){}
+	UniquePointer(UniquePointer&& obj) : source(std::move(obj.source)){}
 
 	UniquePointer<Elm>& operator=(UniquePointer<Elm>&& obj) {
-		source = std::move(obj.sorce);
+		delete source ;
+		source = obj.source;
+		obj.source = nullptr;
 		return *this;
 	}
 

@@ -6,3 +6,6 @@ void test_concat();
 void test_remove();
 void test_popFirst();
 void test_popLast();
+void test_UniquePtr();
+void test_SharedPtr();
+void test_WeakPtr();

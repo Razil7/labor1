@@ -19,6 +19,9 @@ int main() {
 	test_remove();
 	test_popFirst();
 	test_popLast();
+    test_UniquePtr();
+	test_SharedPtr();
+    test_WeakPtr();
 	int choise;
 	bool listPrint = false;
 	LinkedList<int> obj;
